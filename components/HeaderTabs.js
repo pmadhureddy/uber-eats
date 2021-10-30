@@ -7,9 +7,7 @@ import {
   View,
 } from "react-native";
 
-const HeaderTabs = () => {
-  const [activeTab, setActiveTab] = useState("Delivery");
-
+const HeaderTabs = ({ activeTab, setActiveTab }) => {
   return (
     <View style={styles.headerTabsContainer}>
       <HeaderButton
@@ -26,13 +24,7 @@ const HeaderTabs = () => {
   );
 };
 
-const HeaderButton = ({
-  text,
-  btncolor,
-  textColor,
-  activeTab,
-  setActiveTab,
-}) => {
+const HeaderButton = ({ text, activeTab, setActiveTab }) => {
   return (
     <TouchableOpacity
       style={[

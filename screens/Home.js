@@ -1,5 +1,7 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -7,22 +9,80 @@ import {
   Text,
   View,
 } from "react-native";
+import { useQuery } from "react-query";
 import Categories from "../components/Categories";
 import HeaderTabs from "../components/HeaderTabs";
-import RestaurantItem from "../components/RestaurantItem";
+import { localRestaurants } from "../components/RestaurantItems";
+import RestaurantItems from "../components/RestaurantItems";
 import SearchBar from "../components/SearchBar";
+import BottomTabs from "../components/BottomTabs";
+import { Divider } from "react-native-elements";
+
+const YELP_API_KEY =
+  "MZJQY3XYKkiPMNIJ0aLvt2T2AoBKvNsG8kf18huPhPUeOrs3nvaFkOf0mrV0S6a7mYTPMIyqIpI1FbAXmobaAdbXhcxYfp7wG-NSFV9lGNzfoeiaYcUQ2zPLEJp5YXYx";
+
+const restaurantDetails = async () => {
+  const { data } = await axios.get(
+    `https://api.yelp.com/v3/businesses/search?term=restaurants&location=Hollywood`,
+    {
+      headers: {
+        Authorization: `Bearer ${YELP_API_KEY}`,
+      },
+    }
+  );
+  return data;
+};
 
 const Home = () => {
+  const [restaurantData, setRestaurantData] = useState(localRestaurants);
+  const [city, setCity] = useState("");
+  const [activeTab, setActiveTab] = useState("Delivery");
+
+  const { data, isLoading, refetch } = useQuery(
+    "getRestaurantData",
+    restaurantDetails,
+    {
+      select: (data) => {
+        const restaurantData = data.businesses.filter((business) =>
+          business.transactions.includes(activeTab.toLowerCase())
+        );
+        return restaurantData;
+      },
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [activeTab]);
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <View style={styles.homeContainer}>
-        <HeaderTabs />
-        <SearchBar />
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Categories />
-        <RestaurantItem />
-      </ScrollView>
+      {isLoading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      ) : (
+        <>
+          <View style={styles.homeContainer}>
+            <HeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            <SearchBar />
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Categories />
+            <RestaurantItems restaurantData={data} />
+          </ScrollView>
+          <Divider />
+          <View style={{ backgroundColor: "#fff" }}>
+            <BottomTabs />
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };

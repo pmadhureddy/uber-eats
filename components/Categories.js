@@ -36,8 +36,8 @@ const Categories = () => {
   return (
     <View style={styles.categoriesContainer}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {items?.map((item) => (
-          <View style={{ alignItems: "center", marginRight: 30 }}>
+        {items?.map((item, index) => (
+          <View key={index} style={{ alignItems: "center", marginRight: 30 }}>
             <Image
               source={item.image}
               style={{
