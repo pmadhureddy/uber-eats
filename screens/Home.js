@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { useQuery } from "react-query";
+import { YELP_API_KEY } from "@env";
 import Categories from "../components/Categories";
 import HeaderTabs from "../components/HeaderTabs";
 import { localRestaurants } from "../components/RestaurantItems";
@@ -18,9 +19,7 @@ import SearchBar from "../components/SearchBar";
 import BottomTabs from "../components/BottomTabs";
 import { Divider } from "react-native-elements";
 
-const YELP_API_KEY =
-  "MZJQY3XYKkiPMNIJ0aLvt2T2AoBKvNsG8kf18huPhPUeOrs3nvaFkOf0mrV0S6a7mYTPMIyqIpI1FbAXmobaAdbXhcxYfp7wG-NSFV9lGNzfoeiaYcUQ2zPLEJp5YXYx";
-
+console.log(YELP_API_KEY);
 const restaurantDetails = async () => {
   const { data } = await axios.get(
     `https://api.yelp.com/v3/businesses/search?term=restaurants&location=Hollywood`,
