@@ -11,7 +11,7 @@ const SearchBar = () => {
     <View style={{ marginTop: 15, flexDirection: "row" }}>
       <GooglePlacesAutocomplete
         placeholder="Search"
-        query={{ key: GOOGLE_PLACES_API_KEY }}
+        query={{ key: GOOGLE_PLACES_API_KEY, language: "en" }}
         onPress={(data, details = null) => {
           console.log(data.description);
         }}
