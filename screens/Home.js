@@ -1,6 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useQuery } from "react-query";
 import { YELP_API_KEY } from "@env";
 import Categories from "../components/Home/Categories";
@@ -10,11 +17,12 @@ import RestaurantItems from "../components/Home/RestaurantItems";
 import SearchBar from "../components/Home/SearchBar";
 import BottomTabs from "../components/Home/BottomTabs";
 import { Divider } from "react-native-elements";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 console.log(YELP_API_KEY);
-const restaurantDetails = async () => {
+const restaurantDetails = async (city) => {
   const { data } = await axios.get(
-    `https://api.yelp.com/v3/businesses/search?term=restaurants&location=Hollywood`,
+    `https://api.yelp.com/v3/businesses/search?term=restaurants&location=${city}`,
     {
       headers: {
         Authorization: `Bearer ${YELP_API_KEY}`,
@@ -24,14 +32,13 @@ const restaurantDetails = async () => {
   return data;
 };
 
-const Home = () => {
-  const [restaurantData, setRestaurantData] = useState(localRestaurants);
-  const [city, setCity] = useState("");
+const Home = ({ navigation }) => {
+  const [city, setCity] = useState("San Francisco");
   const [activeTab, setActiveTab] = useState("Delivery");
 
   const { data, isLoading, refetch } = useQuery(
     "getRestaurantData",
-    restaurantDetails,
+    () => restaurantDetails(city),
     {
       select: (data) => {
         const restaurantData = data.businesses.filter((business) =>
@@ -45,7 +52,7 @@ const Home = () => {
 
   useEffect(() => {
     refetch();
-  }, [activeTab]);
+  }, [city, activeTab]);
 
   return (
     <>
@@ -60,18 +67,20 @@ const Home = () => {
         </View>
       ) : (
         <>
-          <View style={styles.homeContainer}>
-            <HeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-            <SearchBar />
-          </View>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Categories />
-            <RestaurantItems restaurantData={data} />
-          </ScrollView>
-          <Divider />
-          <View style={{ backgroundColor: "#fff" }}>
-            <BottomTabs />
-          </View>
+          <SafeAreaView style={styles.AndroidSafeArea}>
+            <View style={styles.homeContainer}>
+              <HeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+              <SearchBar setCity={setCity} />
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Categories />
+              <RestaurantItems restaurantData={data} navigation={navigation} />
+            </ScrollView>
+            <Divider />
+            <View style={{ backgroundColor: "#fff" }}>
+              <BottomTabs />
+            </View>
+          </SafeAreaView>
         </>
       )}
     </>
@@ -81,6 +90,11 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "gray",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
   homeContainer: {
     backgroundColor: "white",
     padding: 10,
