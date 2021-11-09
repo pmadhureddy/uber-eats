@@ -36,7 +36,7 @@ const Home = ({ navigation }) => {
   const [city, setCity] = useState("San Francisco");
   const [activeTab, setActiveTab] = useState("Delivery");
 
-  const { data, isLoading, refetch } = useQuery(
+  const { data, isLoading, isFetching, refetch } = useQuery(
     "getRestaurantData",
     () => restaurantDetails(city),
     {
@@ -56,33 +56,35 @@ const Home = ({ navigation }) => {
 
   return (
     <>
-      {isLoading ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#00ff00" />
+      <SafeAreaView style={styles.AndroidSafeArea}>
+        <View style={styles.homeContainer}>
+          <HeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <SearchBar setCity={setCity} />
         </View>
-      ) : (
-        <>
-          <SafeAreaView style={styles.AndroidSafeArea}>
-            <View style={styles.homeContainer}>
-              <HeaderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-              <SearchBar setCity={setCity} />
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Categories />
-              <RestaurantItems restaurantData={data} navigation={navigation} />
-            </ScrollView>
-            <Divider />
-            <View style={{ backgroundColor: "#fff" }}>
-              <BottomTabs />
-            </View>
-          </SafeAreaView>
-        </>
-      )}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Categories />
+          <RestaurantItems restaurantData={data} navigation={navigation} />
+        </ScrollView>
+        <Divider />
+        <View style={{ backgroundColor: "#fff" }}>
+          <BottomTabs />
+        </View>
+        {isLoading || isFetching ? (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        ) : null}
+      </SafeAreaView>
     </>
   );
 };

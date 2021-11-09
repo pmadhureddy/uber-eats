@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 // import { GOOGLE_PLACES_API_KEY } from "@env";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -7,6 +7,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 
 // console.log(GOOGLE_PLACES_API_KEY, "GOOGLE_PLACES_API_KEY");
 const SearchBar = ({ setCity }) => {
+  const [searchedCity, setSearchedCity] = useState("");
   return (
     <View style={{ marginTop: 15, flexDirection: "row" }}>
       <GooglePlacesAutocomplete
@@ -17,7 +18,7 @@ const SearchBar = ({ setCity }) => {
         }}
         textInputProps={{
           onChangeText: (text) => {
-            setCity(text);
+            setSearchedCity(text);
           },
           autoCapitalize: "none",
           autoCorrect: false,
@@ -25,7 +26,7 @@ const SearchBar = ({ setCity }) => {
         onPress={(data, details = null) => {
           console.log(data.description);
           const city = data.description.split(",")[0];
-          setCity(city);
+          setSearchedCity(city);
         }}
         styles={{
           textInput: {
@@ -48,7 +49,7 @@ const SearchBar = ({ setCity }) => {
           </View>
         )}
         renderRightButton={() => (
-          <View
+          <TouchableOpacity
             style={{
               flexDirection: "row",
               marginRight: 8,
@@ -57,6 +58,9 @@ const SearchBar = ({ setCity }) => {
               borderRadius: 30,
               alignItems: "center",
             }}
+            onPress={() => {
+              setCity(searchedCity);
+            }}
           >
             <AntDesign
               name="clockcircle"
@@ -64,7 +68,7 @@ const SearchBar = ({ setCity }) => {
               style={{ marginRight: 6 }}
             />
             <Text>Search</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
