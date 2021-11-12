@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-// import { GOOGLE_PLACES_API_KEY } from "@env";
+import { GOOGLE_PLACES_API_KEY } from "@env";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-// console.log(GOOGLE_PLACES_API_KEY, "GOOGLE_PLACES_API_KEY");
 const SearchBar = ({ setCity }) => {
   const [searchedCity, setSearchedCity] = useState("");
   return (
@@ -13,7 +12,7 @@ const SearchBar = ({ setCity }) => {
       <GooglePlacesAutocomplete
         placeholder="Search"
         query={{
-          key: "AIzaSyCjSKhFOP_pccKEKGG6TlWyVNu2v2_KtEM",
+          key: GOOGLE_PLACES_API_KEY,
           language: "en",
         }}
         textInputProps={{

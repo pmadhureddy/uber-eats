@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Modal } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import firebase from "firebase";
 import OrderItem from "./OrderItem";
@@ -36,7 +35,7 @@ const ViewCart = ({ navigation }) => {
         console.log("Hi madhu");
         setTimeout(() => {
           setLoading(false);
-          navigation.navigate("OrderCompleted");
+          navigation.replace("OrderCompleted");
         }, 2500);
       });
   };
@@ -56,6 +55,10 @@ const ViewCart = ({ navigation }) => {
             </View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
               <TouchableOpacity
+                onPress={() => {
+                  addOrderToFireBase();
+                  setModalVisible(false);
+                }}
                 style={{
                   marginTop: 20,
                   backgroundColor: "black",
@@ -64,10 +67,6 @@ const ViewCart = ({ navigation }) => {
                   borderRadius: 30,
                   width: 300,
                   position: "relative",
-                }}
-                onPress={() => {
-                  addOrderToFireBase();
-                  setModalVisible(false);
                 }}
               >
                 <Text style={{ color: "white", fontSize: 20 }}>Checkout</Text>
