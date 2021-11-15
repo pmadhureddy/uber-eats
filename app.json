@@ -1,0 +1,16 @@
+{
+    "expo": {
+     "name": "uber-eats-clone",
+     "icon": "",
+     "version": "1.0.0",
+     "slug": "your-app-slug",
+     "ios": {
+       "bundleIdentifier": "com.madhutech.ubereatsclone",
+       "buildNumber": "1.0.0"
+     },
+     "android": {
+       "package": "com.madhutech.ubereatsclone",
+       "versionCode": 1
+     }
+    }
+  }
